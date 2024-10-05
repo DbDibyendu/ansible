@@ -1,0 +1,40 @@
+---
+- name: Install Zsh and Oh My Zsh on macOS
+  hosts: localhost
+  tasks:
+    - name: Install Zsh
+      homebrew:
+        name: zsh
+        state: present
+
+    - name: Ensure Zsh is the default shell
+      command: chsh -s $(which zsh)
+      args:
+        creates: ~/.zshrc
+
+    - name: Install Oh My Zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      args:
+        creates: ~/.oh-my-zsh
+
+    - name: Create or update .zshrc file with configuration and aliases
+      copy:
+        dest: ~/.zshrc
+        content: |
+          # Zsh configuration
+          export ZSH="$HOME/.oh-my-zsh"
+          ZSH_THEME="robbyrussell"
+          plugins=(git)
+          source $ZSH/oh-my-zsh.sh
+
+          # Custom aliases
+          alias yw-dnext='cd packages/website;rm -rf .next;cd ../..;'
+          alias jestcomp='yarn jest $(pwd)/'
+          alias y-lr='yarn workspace main dev'
+          alias yl-dnext='cd packages/main;rm -rf .next;cd ../..;'
+          alias vz='vim ~/.zshrc'
+          alias sz='source ~/.zshrc'
+          alias mp='make sync TEAMS=payments'
+          alias gpmp='ga . ; gcmsg "Make sync"; gp'
+

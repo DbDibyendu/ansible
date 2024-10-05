@@ -1,0 +1,33 @@
+---
+- name: Install Go programming language
+  hosts: all
+  tasks:
+    - name: Download Go binary
+      get_url:
+        url: https://golang.org/dl/go1.19.linux-amd64.tar.gz
+        dest: /tmp/go1.19.linux-amd64.tar.gz
+
+    - name: Extract Go binary
+      unarchive:
+        src: /tmp/go1.19.linux-amd64.tar.gz
+        dest: /usr/local
+        remote_src: yes
+
+    - name: Set up Go environment variables
+      lineinfile:
+        path: /etc/profile
+        line: 'export PATH=$PATH:/usr/local/go/bin'
+        state: present
+
+    - name: Reload profile to update environment variables
+      command: source /etc/profile
+      when: ansible_os_family == "Debian"
+
+    - name: Verify Go installation
+      command: go version
+      register: go_version_output
+
+    - name: Print Go version
+      debug:
+        var: go_version_output.stdout
+

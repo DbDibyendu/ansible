@@ -1,0 +1,67 @@
+---
+- name: Install Zsh, Oh My Zsh, Go, Node.js, Yarn, and Git on macOS
+  hosts: localhost
+  tasks:
+    - name: Install Zsh
+      homebrew:
+        name: zsh
+        state: present
+
+    - name: Ensure Zsh is the default shell
+      command: chsh -s $(which zsh)
+      args:
+        creates: ~/.zshrc
+
+    - name: Install Oh My Zsh
+      shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+      args:
+        creates: ~/.oh-my-zsh
+
+    - name: Install Node.js
+      homebrew:
+        name: node
+        state: present
+
+    - name: Install Yarn
+      homebrew:
+        name: yarn
+        state: present
+
+    - name: Install Git
+      homebrew:
+        name: git
+        state: present
+
+    - name: Append Zsh configurations to .zshrc
+      lineinfile:
+        path: ~/.zshrc
+        line: "{{ item }}"
+        state: present
+      loop:
+        - '# ZSH Configuration'
+        - 'ZSH_THEME="robbyrussell"'
+        - 'source $ZSH/oh-my-zsh.sh'
+        - 'source ~/.nvm/nvm.sh'
+        - '# Go Environment Variables'
+        - 'export GOROOT="/usr/local/go"'
+        - 'export GOPATH="${HOME}/go"'
+        - 'export GOBIN="${GOPATH}/bin"'
+        - 'export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"'
+        - 'test -d "${GOPATH}" || mkdir "${GOPATH}"'
+        - 'test -d "${GOPATH}/src/github.com" || mkdir -p "${GOPATH}/src/github.com"'
+        - '# Node.js Environment Variables'
+        - 'export NODE_PATH="/usr/local/lib/node_modules"'
+        - '# Aliases'
+        - 'alias y-mweb="yarn workspace website dev-mweb"'
+        - 'alias y-web="yarn workspace website dev"'
+        - 'alias yw-dnext="cd packages/website; rm -rf .next; cd ../..;"'
+        - 'alias jestcomp="yarn jest $(pwd)/"'
+        - 'alias y-lr="yarn workspace main dev"'
+        - 'alias yl-dnext="cd packages/main; rm -rf .next; cd ../..;"'
+        - 'alias vz="vim ~/.zshrc"'
+        - 'alias sz="source ~/.zshrc"'
+        - 'alias mp="make sync TEAMS=payments"'
+        - 'alias gpmp="ga .; gcmsg \"Make sync\"; gp"'
+        - 'PATH=~/.console-ninja/.bin:$PATH'
+
