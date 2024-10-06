@@ -39,20 +39,14 @@
         line: "{{ item }}"
         state: present
       loop:
-        - '# ZSH Configuration'
+        - "# Theme configuration"
         - 'ZSH_THEME="robbyrussell"'
-        - 'source $ZSH/oh-my-zsh.sh'
-        - 'source ~/.nvm/nvm.sh'
-        - '# Go Environment Variables'
-        - 'export GOROOT="/usr/local/go"'
-        - 'export GOPATH="${HOME}/go"'
-        - 'export GOBIN="${GOPATH}/bin"'
-        - 'export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"'
-        - 'test -d "${GOPATH}" || mkdir "${GOPATH}"'
-        - 'test -d "${GOPATH}/src/github.com" || mkdir -p "${GOPATH}/src/github.com"'
-        - '# Node.js Environment Variables'
-        - 'export NODE_PATH="/usr/local/lib/node_modules"'
-        - '# Aliases'
+        - "# Enable plugins"
+        - "plugins=(git zsh-autosuggestions)"
+        - "# Source Oh My Zsh and NVM"
+        - "source $ZSH/oh-my-zsh.sh"
+        - "source ~/.nvm/nvm.sh"
+        - "# Aliases"
         - 'alias y-mweb="yarn workspace website dev-mweb"'
         - 'alias y-web="yarn workspace website dev"'
         - 'alias yw-dnext="cd packages/website; rm -rf .next; cd ../..;"'
@@ -62,6 +56,14 @@
         - 'alias vz="vim ~/.zshrc"'
         - 'alias sz="source ~/.zshrc"'
         - 'alias mp="make sync TEAMS=payments"'
-        - 'alias gpmp="ga .; gcmsg \"Make sync\"; gp"'
-        - 'PATH=~/.console-ninja/.bin:$PATH'
-
+        - 'alias gpmp="ga .; gcmsg \\"Make sync\\"; gp"'
+        - "# Go environment variables"
+        - 'export GOPATH="${HOME}/go"'
+        - 'export GOBIN="${GOPATH}/bin"'
+        - 'export GOROOT="$(brew --prefix go@1.19)/libexec"'
+        - "# Update PATH"
+        - 'export PATH="$HOME/.console-ninja/.bin:$PATH:${GOPATH}/bin:${GOROOT}/bin"'
+        - 'test -d "${GOPATH}" || mkdir -p "${GOPATH}"'
+        - 'test -d "${GOPATH}/src/github.com" || mkdir -p "${GOPATH}/src/github.com"'
+        - "# Source GVM if installed"
+        - '[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"'
